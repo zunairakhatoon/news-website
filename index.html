@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NewsPulse • Dynamic News</title>
+  <style>
+    :root{
+      --bg: #ffffff;
+      --paper:#fafafa;
+      --ink:#111827;
+      --muted:#6b7280;
+      --accent:#bb1919; 
+      --line:#e5e7eb;
+      --chip:#f3f4f6;
+      --shadow: 0 8px 24px rgba(0,0,0,.08);
+      --radius: 16px;
+      --maxw: 1280px;
+    }
+    .card {
+  display: flex;
+  flex-direction: column;      
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: .2s transform, .2s box-shadow;
+}
+
+.card img {
+  width: 100%;
+  height: 160px;                
+  object-fit: cover;
+  background: #ddd;
+}
+
+.card .content {
+  padding: 10px;
+}
+
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 15px;              
+  line-height: 1.3;
+}
+
+.card p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+    [data-theme="dark"] {
+      --bg:#0b0b0f; --paper:#111318; --ink:#f9fafb; --muted:#9ca3af; --line:#1f2937; --chip:#111827; --shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+    *{ box-sizing: border-box; margin:0; padding:0; }
+    body{ font-family: 'Segoe UI', Roboto, Arial, sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+    a{ color:inherit; text-decoration: none }
+    .container{ max-width: var(--maxw); margin: 0 auto; padding: 16px; }
+    header{ border-bottom:1px solid var(--line); background:var(--paper); position:sticky; top:0; z-index:10 }
+    .topbar{ display:flex; align-items:center; gap:16px; padding: 12px 16px; }
+    .brand{ display:flex; align-items:center; gap:8px; font-weight:800; font-size:20px; letter-spacing:.4px }
+    .brand .logo span{ display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:#000; color:#fff; font-weight:700; border-radius:3px; font-size:14px }
+    .brand b{ background:var(--accent); color:#fff; padding:4px 8px; border-radius:4px; margin-left:4px; }
+    .nav{ display:flex; gap:12px; overflow:auto; padding:0 8px 8px; }
+    .chip{ white-space:nowrap; padding:6px 12px; border:1px solid var(--line); border-radius:999px; background:var(--chip); cursor:pointer; font-weight:600; }
+    .chip.active{ background:var(--accent); border-color:var(--accent); color:#fff }
+    .search{ margin-left:auto; display:flex; align-items:center; gap:8px }
+    .search input{ width:220px; max-width:50vw; padding:10px 12px; border:1px solid var(--line); background:var(--bg); border-radius:10px; color:var(--ink) }
+    .btn{ cursor:pointer; padding:10px 14px; border-radius:10px; border:1px solid var(--line); background:var(--bg); font-weight:700 }
+    .btn.primary{ background:var(--accent); border-color:var(--accent); color:#fff }
+    .grid{ display:grid; grid-template-columns: 2fr 1fr; gap:20px; }
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr } }
+    .hero{ position:relative; overflow:hidden; background:var(--paper); border-radius:var(--radius); box-shadow: var(--shadow); margin-bottom:20px; }
+    .hero figure{ margin:0; height:380px; background:#ddd; position:relative }
+    .hero img{ width:100%; height:100%; object-fit:cover; display:block }
+    .hero .overlay{ position:absolute; inset:auto 0 0 0; padding:16px; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.6) 65%); color:#fff }
+    .hero h1{ margin:0 0 8px; font-size: clamp(22px, 3vw, 32px); line-height:1.2 }
+    .meta{ color:#e5e7eb; font-size:13px; opacity:.95 }
+    .hero p{ margin:12px 0 0; color:#f3f4f6 }
+    .cards{ margin-top:16px; display:grid; gap:16px; grid-template-columns: repeat(3, 1fr) }
+    @media (max-width: 980px){ .cards{ grid-template-columns: 1fr 1fr } }
+    @media (max-width: 640px){ .cards{ grid-template-columns: 1fr } }
+    .card{ display:flex; gap:14px; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden; transition:.2s transform, .2s box-shadow }
+    .card:hover{ transform: translateY(-3px); box-shadow: var(--shadow); }
+    .card img{ width:42%; min-width:140px; height:150px; object-fit:cover; background:#ddd }
+    .card .content{ padding:12px; display:flex; flex-direction:column; }
+    .card h3{ margin:0 0 6px; font-size:17px; line-height:1.3 }
+    .card .meta{ color:var(--muted) }
+    .card p{ margin:8px 0 0; color:var(--muted) }
+    .side{ display:flex; flex-direction:column; gap:12px }
+    .headline{ padding:12px; border-bottom:1px solid var(--line) }
+    .headline:last-child{ border-bottom:none }
+    .headline a{ display:block; font-weight:700 }
+    .headline .meta{ color:var(--muted); font-size:13px }
+    .panel{ background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden }
+    footer{ text-align:center; color:var(--muted); padding:40px 0 }
+    .toggle-theme{ margin-left:8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar container">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><span>N</span><span>P</span></div>
+        News<b>Pulse</b>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="search">
+        <input id="q" type="search" placeholder="Search headlines… (Enter)" />
+        <button id="go" class="btn">Go</button>
+        <button id="theme" class="btn toggle-theme">🌙</button>
+      </div>
+    </div>
+  </header>
+  <main class="container" id="app">
+    <section class="grid">
+      <div>
+        <article id="hero" class="hero hide"></article>
+        <div id="cards" class="cards"></div>
+        <div style="text-align:center;margin:20px 0"><button id="more" class="btn">Load more</button></div>
+      </div>
+      <aside class="side">
+        <div class="panel"><div style="padding:12px 12px 0"><h4>Latest headlines</h4></div><div id="side"></div></div>
+      </aside>
+    </section>
+  </main>
+  <footer><div class="container">Dynamic News •</div></footer>
+  <script>
+    const PROVIDERS = {
+      guardian: {
+        name: 'Guardian',
+        apiKey: '', 
+        async fetch({ q='', page=1, pageSize=12 }){
+          const SECTION_MAP={ top:'', world:'world', business:'business', technology:'technology', sports:'sport', entertainment:'culture', science:'science', health:'society' };
+          const isCategory = CATEGORIES.some(c=>c.id===q);
+          const url = new URL('https://content.guardianapis.com/search');
+          url.searchParams.set('page-size', pageSize);
+          url.searchParams.set('page', page);
+          url.searchParams.set('show-fields','thumbnail,trailText');
+          if(isCategory){ const sec=SECTION_MAP[q]; if(sec) url.searchParams.set('section', sec); }
+          else if(q) url.searchParams.set('q', q);
+          url.searchParams.set('api-key','test'); 
+          const res = await fetch(url);
+          const data = await res.json();
+          const items = data.response.results.map(x=>({ title:x.webTitle, url:x.webUrl, image:x.fields?.thumbnail, description:x.fields?.trailText, source:'Guardian', publishedAt:x.webPublicationDate }));
+          return { items, hasMore:data.response.currentPage < data.response.pages };
+        }
+      },
+      nytimes: {
+        name:'NYTimes',
+        apiKey:'', 
+        async fetch({ q='', page=0, pageSize=12 }){
+          if(!this.apiKey) throw new Error('NYTimes key missing');
+          const url = new URL('https://api.nytimes.com/svc/search/v2/articlesearch.json');
+          url.searchParams.set('q', q||'news');
+          url.searchParams.set('page', page);
+          url.searchParams.set('api-key', this.apiKey);
+          const res = await fetch(url); const data=await res.json();
+          const items = data.response.docs.map(x=>({ title:x.headline.main, url:x.web_url, image:(x.multimedia[0]? 'https://nytimes.com/'+x.multimedia[0].url:null), description:x.abstract, source:'NYTimes', publishedAt:x.pub_date }));
+          return { items, hasMore: true };
+        }
+      },
+      spaceflight: {
+        name: 'Spaceflight News',
+        async fetch({ q='', page=1, pageSize=12 }){
+          const limit=pageSize; const offset=(page-1)*pageSize;
+          const url=new URL('https://api.spaceflightnewsapi.net/v4/articles/');
+          url.searchParams.set('limit', limit); url.searchParams.set('offset', offset);
+          if(q) url.searchParams.set('title_contains', q);
+          const res=await fetch(url); const data=await res.json();
+          const items=data.results.map(x=>({ title:x.title, url:x.url, image:x.image_url, description:x.summary, source:x.news_site, publishedAt:x.published_at }));
+          return { items, hasMore:Boolean(data.next) };
+        }
+      },
+      gnews: {
+        name: 'GNews',
+        apiKey: '9bd30994eadcf404a90bad45c0fd56f8',
+        async fetch({ q='', page=1, pageSize=12, country='' }){
+          if(!this.apiKey || this.apiKey==='YOUR_GNEWS_API_KEY') throw new Error('GNews API key nahi lagi code mein apiKey daalain');
+          const isSearch = Boolean(q) && !CATEGORIES.some(c=>c.id===q);
+          const url = new URL(isSearch ? 'https://gnews.io/api/v4/search' : 'https://gnews.io/api/v4/top-headlines');
+          url.searchParams.set('lang','en');
+          url.searchParams.set('max', Math.min(pageSize,10));
+          url.searchParams.set('page', page);
+          url.searchParams.set('apikey', this.apiKey);
+          if(isSearch){ url.searchParams.set('q', q); }
+          else { url.searchParams.set('category', q==='top'?'general':q); }
+          if(country) url.searchParams.set('country', country);
+          const res=await fetch(url); const data=await res.json();
+          if(data.errors) throw new Error(data.errors[0]);
+          const items=(data.articles||[]).map(x=>({ title:x.title, url:x.url, image:x.image, description:x.description, source:x.source?.name, publishedAt:x.publishedAt }));
+          return { items, hasMore: items.length === Math.min(pageSize,10) };
+        }
+      }
+    };
+    let activeProvider='gnews';
+    const CATEGORIES=[{id:'top',label:'Top Stories'},{id:'world',label:'World'},{id:'business',label:'Business'},{id:'technology',label:'Tech'},{id:'sports',label:'Sport'},{id:'entertainment',label:'Entertainment'},{id:'science',label:'Science'},{id:'health',label:'Health'}];
+    let state={ page:1,pageSize:12,query:'',category:'top',items:[],hasMore:true };
+    const nav=document.getElementById('nav'), hero=document.getElementById('hero'), cards=document.getElementById('cards'), side=document.getElementById('side'), more=document.getElementById('more');
+    CATEGORIES.forEach((c,i)=>{ const chip=document.createElement('button'); chip.className='chip'+(i===0?' active':''); chip.textContent=c.label; chip.addEventListener('click',()=>selectCategory(c.id,chip)); nav.appendChild(chip); });
+    function selectCategory(id,chip){ nav.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); chip.classList.add('active'); state.category=id; state.page=1; state.items=[]; state.hasMore=true; state.query=''; document.getElementById('q').value=''; load(); }
+    document.getElementById('go').addEventListener('click',()=>startSearch()); document.getElementById('q').addEventListener('keydown',e=>{ if(e.key==='Enter') startSearch(); }); function startSearch(){ state.query=document.getElementById('q').value.trim(); state.page=1; state.items=[]; state.hasMore=true; load(); }
+    more.addEventListener('click',()=>{ if(state.hasMore){ state.page++; load(true);} });
+    document.getElementById('theme').addEventListener('click',()=>{ const t=document.body.getAttribute('data-theme'); document.body.setAttribute('data-theme',t==='dark'?'light':'dark'); });
+    const cache = new Map(); // key -> {data, ts}
+    const CACHE_TTL = 5*60*1000; // 5 min
+    load();
+    async function load(append=false){
+      const params = { q:state.query||state.category, page:state.page, pageSize:state.pageSize };
+      const cacheKey = JSON.stringify(params);
+      const cached = cache.get(cacheKey);
+      if(cached && Date.now()-cached.ts < CACHE_TTL){ applyResult(cached.data, append); return; }
+      try{
+        const result = await PROVIDERS.gnews.fetch(params);
+        cache.set(cacheKey, { data:result, ts:Date.now() });
+        applyResult(result, append);
+      }catch(gnewsErr){
+        try{
+          const result = await PROVIDERS.guardian.fetch(params); // country filter ignored, worldwide-ish anyway
+          cache.set(cacheKey, { data:result, ts:Date.now() });
+          applyResult(result, append);
+        }catch(guardianErr){
+          cards.innerHTML='<p style="grid-column:1/-1">Error: '+guardianErr.message+'</p>';
+        }
+      }
+    }
+    function applyResult({items,hasMore}, append){ state.hasMore=hasMore; state.items=append?state.items.concat(items):items; render(); }
+    function render(){ if(state.items.length===0){ hero.classList.add('hide'); cards.innerHTML='<p>No articles.</p>'; side.innerHTML=''; return; } const main=state.items[0]; hero.classList.remove('hide'); hero.innerHTML=`<a href="${main.url}" target="_blank"><figure><img src="${main.image||'https://picsum.photos/800/600'}"><div class="overlay"><h1>${main.title}</h1><div class="meta">${main.source} • ${timeAgo(main.publishedAt)}</div><p>${main.description||''}</p></div></figure></a>`; const rest=state.items.slice(1); cards.innerHTML=rest.map(x=>`<a class="card" href="${x.url}" target="_blank"><img src="${x.image||'https://picsum.photos/400/300'}"><div class="content"><h3>${x.title}</h3><div class="meta">${x.source} • ${timeAgo(x.publishedAt)}</div><p>${x.description||''}</p></div></a>`).join(''); side.innerHTML=state.items.slice(0,6).map(x=>`<div class="headline"><a href="${x.url}" target="_blank">${x.title}</a><div class="meta">${x.source} • ${timeAgo(x.publishedAt)}</div></div>`).join(''); more.style.visibility=state.hasMore?'visible':'hidden'; }
+    function timeAgo(iso){ if(!iso) return ''; const t=new Date(iso).getTime(); const s=Math.floor((Date.now()-t)/1000); const d=Math.floor(s/86400); if(d>0)return d+'d ago'; const h=Math.floor(s/3600); if(h>0)return h+'h ago'; const m=Math.floor(s/60); if(m>0)return m+'m ago'; return 'just now'; }
+  </script>
+</body>
+</html>
