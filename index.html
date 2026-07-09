@@ -174,7 +174,7 @@
       },
       gnews: {
         name: 'GNews',
-        apiKey: '9bd30994eadcf404a90bad45c0fd56f8',
+        apiKey: 'GET YOUR API KEY',
         async fetch({ q='', page=1, pageSize=12, country='' }){
           if(!this.apiKey || this.apiKey==='YOUR_GNEWS_API_KEY') throw new Error('GNews API key nahi lagi code mein apiKey daalain');
           const isSearch = Boolean(q) && !CATEGORIES.some(c=>c.id===q);
